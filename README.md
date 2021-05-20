@@ -1,5 +1,5 @@
 # Out-of-Distribution Detection Using Union of 1-Dimensional Subspaces
-implementation of the data selection algorithm proposed in: 
+implementation of the out-of-distribution detection method proposed in: 
 
 A. Zaeemzadeh, N. Bisagno, Z. Sambugaro, N. Conci, N. Rahnavard, and M. Shah: Out-of-Distribution Detection Using Union of 1-Dimensional Subspaces. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2021.
 [link](https://www.crcv.ucf.edu/wp-content/uploads/2018/11/Out-of-Distribution-Detection-Using-Union-of-1-Dimensional-Subspaces.pdf)
