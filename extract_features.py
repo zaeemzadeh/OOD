@@ -119,24 +119,23 @@ def testData(net1, CUDA_DEVICE, trainloader, testloader_in, testloader_out, path
         features = []
         for j, data in enumerate(testloader_in):
             images, lab = data
+            feat_list = []
 
             with torch.no_grad():
                 inputs = Variable(images.cuda(CUDA_DEVICE))
-                outputs, feat = net1(inputs)
-                feat = feat[:, :, None]
-                for mc in range(1, MC_runs):
-                    feat = torch.cat((feat, net1(inputs)[1][:, : , None]), dim=2)
-                if j == 0:
-                    features = feat.cpu()
-                else:
-                    features = torch.cat((features, feat.cpu()), dim=0)
 
+                for mc in range(MC_runs):
+                    feat_list.append(net1(inputs)[1][:, : , None])
+
+                feat_list = torch.cat(feat_list, dim=2)
+
+                features.append(feat_list)
 
             if j % 1000 == 0:
                 print("{:4}/{:4} batches processed, {:.1f} seconds used.".format(j+1, len(testloader_in), time.time()-t0))
                 t0 = time.time()
 
-        features = features.numpy()
+        features = torch.cat(features).cpu().detach().numpy()
         np.save(savepath+'featuresTest_in', features)
         t0 = time.time()
 
@@ -145,23 +144,23 @@ def testData(net1, CUDA_DEVICE, trainloader, testloader_in, testloader_out, path
     features = []
     for j, data in enumerate(testloader_out):
         images, _ = data
+        feat_list = []
 
         with torch.no_grad():
             inputs = Variable(images.cuda(CUDA_DEVICE))
-            outputs, feat = net1(inputs)
-            feat = feat[:, :, None]
-            for mc in range(1, MC_runs):
-                feat = torch.cat((feat, net1(inputs)[1][:, :, None]), dim=2)
-            if j == 0:
-                features = feat.cpu()
-            else:
-                features = torch.cat((features, feat.cpu()), dim=0)
+
+            for mc in range(MC_runs):
+                feat_list.append(net1(inputs)[1][:, : , None])
+
+            feat_list = torch.cat(feat_list, dim=2)
+
+            features.append(feat_list)
 
         if j % 1000 == 0:
             print("{:4}/{:4} batches processed, {:.1f} seconds used.".format(j+1, len(testloader_out), time.time()-t0))
             t0 = time.time()
 
-    features = features.numpy()
+    features = torch.cat(features).cpu().detach().numpy()
     np.save(savepath+'features_out_'+dataName, features)
 
 
@@ -173,20 +172,3 @@ def ensure_dir(directory):
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
